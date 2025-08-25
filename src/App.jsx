@@ -1,89 +1,90 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [topic, setTopic] = useState('')
-  const [questionCount, setQuestionCount] = useState(5)
-  const [quiz, setQuiz] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [userAnswers, setUserAnswers] = useState({})
-  const [showResults, setShowResults] = useState(false)
+  const [topic, setTopic] = useState("");
+  const [questionCount, setQuestionCount] = useState(5);
+  const [quiz, setQuiz] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [userAnswers, setUserAnswers] = useState({});
+  const [showResults, setShowResults] = useState(false);
 
   const generateQuiz = async () => {
     if (!topic.trim()) {
-      setError('Please enter a topic')
-      return
+      setError("Please enter a topic");
+      return;
     }
 
     if (questionCount < 1 || questionCount > 20) {
-      setError('Please enter a number of questions between 1 and 20')
-      return
+      setError("Please enter a number of questions between 1 and 20");
+      return;
     }
 
-    setLoading(true)
-    setError('')
-    setQuiz(null)
-    setUserAnswers({})
-    setShowResults(false)
+    setLoading(true);
+    setError("");
+    setQuiz(null);
+    setUserAnswers({});
+    setShowResults(false);
 
-          try {
-        const response = await fetch('http://localhost:3000/api/quiz', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: "llama3",
-            messages: [{"role": "user", "content": "What is python"}]
-          })
-        })
+    try {
+      const response = await fetch("http://localhost:3000/api/quiz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic: topic,
+          questionCount: questionCount,
+        }),
+      });
 
-        if (!response.ok) {
-          throw new Error('Failed to generate quiz')
-        }
+      if (!response.ok) {
+        throw new Error("Failed to generate quiz");
+      }
 
-        const data = await response.json()
-        setQuiz(data.quiz)
+      const data = await response.json();
+      console.log(data.data);
+      setQuiz(data.data);
     } catch (err) {
-      setError('Failed to generate quiz. Please try again.')
-      console.error('Error generating quiz:', err)
+      setError("Failed to generate quiz. Please try again.");
+      console.error("Error generating quiz:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleAnswerSelect = (questionIndex, selectedAnswer) => {
-    setUserAnswers(prev => ({
+    setUserAnswers((prev) => ({
       ...prev,
-      [questionIndex]: selectedAnswer
-    }))
-  }
+      [questionIndex]: selectedAnswer,
+    }));
+  };
 
   const submitQuiz = () => {
-    setShowResults(true)
-  }
+    setShowResults(true);
+  };
 
   const calculateScore = () => {
-    if (!quiz || !userAnswers) return 0
-    
-    let correct = 0
+    if (!quiz || !userAnswers) return 0;
+
+    let correct = 0;
     quiz.questions.forEach((question, index) => {
       if (userAnswers[index] === question.correctAnswer) {
-        correct++
+        correct++;
       }
-    })
-    
-    return Math.round((correct / quiz.questions.length) * 100)
-  }
+    });
+
+    return Math.round((correct / quiz.questions.length) * 100);
+  };
 
   const resetQuiz = () => {
-    setQuiz(null)
-    setUserAnswers({})
-    setShowResults(false)
-    setTopic('')
-    setQuestionCount(5)
-  }
+    setQuiz(null);
+    setUserAnswers({});
+    setShowResults(false);
+    setTopic("");
+    setQuestionCount(5);
+  };
 
   return (
     <div className="app">
@@ -116,7 +117,9 @@ function App() {
                 min="1"
                 max="20"
                 value={questionCount}
-                onChange={(e) => setQuestionCount(parseInt(e.target.value) || 1)}
+                onChange={(e) =>
+                  setQuestionCount(parseInt(e.target.value) || 1)
+                }
                 className="question-count-input"
                 disabled={loading}
               />
@@ -129,7 +132,7 @@ function App() {
               disabled={loading || !topic.trim()}
               className="generate-btn"
             >
-              {loading ? 'Generating Quiz...' : 'Generate Quiz'}
+              {loading ? "Generating Quiz..." : "Generate Quiz"}
             </button>
           </div>
         ) : (
@@ -146,7 +149,7 @@ function App() {
                 <div key={questionIndex} className="question-card">
                   <h3>Question {questionIndex + 1}</h3>
                   <p className="question-text">{question.question}</p>
-                  
+
                   <div className="options-container">
                     {question.options.map((option, optionIndex) => (
                       <label key={optionIndex} className="option-label">
@@ -155,19 +158,23 @@ function App() {
                           name={`question-${questionIndex}`}
                           value={optionIndex}
                           checked={userAnswers[questionIndex] === optionIndex}
-                          onChange={() => handleAnswerSelect(questionIndex, optionIndex)}
+                          onChange={() =>
+                            handleAnswerSelect(questionIndex, optionIndex)
+                          }
                           disabled={showResults}
                           className="option-radio"
                         />
-                        <span className={`option-text ${
-                          showResults 
-                            ? optionIndex === question.correctAnswer 
-                              ? 'correct' 
-                              : userAnswers[questionIndex] === optionIndex 
-                                ? 'incorrect' 
-                                : ''
-                            : ''
-                        }`}>
+                        <span
+                          className={`option-text ${
+                            showResults
+                              ? optionIndex === question.correctAnswer
+                                ? "correct"
+                                : userAnswers[questionIndex] === optionIndex
+                                ? "incorrect"
+                                : ""
+                              : ""
+                          }`}
+                        >
                           {option}
                         </span>
                       </label>
@@ -180,7 +187,8 @@ function App() {
                         <span className="correct-feedback">✅ Correct!</span>
                       ) : (
                         <span className="incorrect-feedback">
-                          ❌ Incorrect. The correct answer is: {question.options[question.correctAnswer]}
+                          ❌ Incorrect. The correct answer is:{" "}
+                          {question.options[question.correctAnswer]}
                         </span>
                       )}
                     </div>
@@ -192,7 +200,9 @@ function App() {
             {!showResults ? (
               <button
                 onClick={submitQuiz}
-                disabled={Object.keys(userAnswers).length < quiz.questions.length}
+                disabled={
+                  Object.keys(userAnswers).length < quiz.questions.length
+                }
                 className="submit-btn"
               >
                 Submit Quiz
@@ -201,11 +211,18 @@ function App() {
               <div className="results">
                 <h3>Quiz Results</h3>
                 <div className="score">
-                  <span className="score-text">Your Score: {calculateScore()}%</span>
+                  <span className="score-text">
+                    Your Score: {calculateScore()}%
+                  </span>
                   <span className="score-detail">
-                    ({Object.values(userAnswers).filter((answer, index) => 
-                      answer === quiz.questions[index].correctAnswer
-                    ).length} out of {quiz.questions.length} correct)
+                    (
+                    {
+                      Object.values(userAnswers).filter(
+                        (answer, index) =>
+                          answer === quiz.questions[index].correctAnswer
+                      ).length
+                    }{" "}
+                    out of {quiz.questions.length} correct)
                   </span>
                 </div>
                 <button onClick={resetQuiz} className="new-quiz-btn">
@@ -217,7 +234,7 @@ function App() {
         )}
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

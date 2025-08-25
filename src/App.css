@@ -13,18 +13,21 @@ body {
 }
 
 .app {
+  width: 100%;
   min-height: 100vh;
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
+  padding: 2rem;
 }
 
 /* Header styles */
 .app-header {
   text-align: center;
   padding: 2rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.1); */
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .app-header h1 {
@@ -80,6 +83,7 @@ body {
   font-size: 1rem;
   transition: all 0.3s ease;
   background: #f8f9fa;
+  color: #000;
 }
 
 .topic-input:focus,
