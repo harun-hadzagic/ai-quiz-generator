@@ -1,188 +1,65 @@
-# 🎯 AI Quiz Generator
+🧠 AI Quiz Generator
+An interactive web application that leverages a local Large Language Model (LLM) to generate custom multiple-choice quizzes on any topic.
 
-A modern web application that generates custom quizzes on any topic using AI. Built with React, Node.js, and Express.
+✨ Features
+Custom Quiz Generation: Enter a topic and specify the number of questions.
 
-## ✨ Features
+Local LLM Integration: Uses a locally-hosted Ollama model for fast, private, and offline quiz generation.
 
-- **Topic-based Quiz Generation**: Enter any topic and get a custom quiz
-- **Customizable Question Count**: Choose how many questions you want (1-20)
-- **Interactive Quiz Interface**: Beautiful, responsive design with real-time feedback
-- **Score Tracking**: See your results and performance
-- **Modern UI**: Clean, intuitive interface with smooth animations
+Interactive UI: A clean and simple interface built with React to take and submit the quiz.
 
-## 🚀 Quick Start
+Instant Results: Get a score and see the correct answers and explanations after completing the quiz.
 
-### Prerequisites
+🛠️ Prerequisites
+Before you can run the application, you need to have the following installed and set up on your machine:
 
-- Node.js (version 14 or higher)
-- npm or yarn
+Node.js & npm: For the React frontend.
 
-### Installation
+Python 3.x & pip: For the server application.
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd ai-quiz-generator
-   ```
+Ollama: A local LLM server. Follow the instructions on the Ollama website to install and run the application.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+A Local Model: You need a model running locally. This project is configured to use the llama3 model. To download and run it, use the following command in your terminal:
 
-3. **Start the backend server**
-   ```bash
-   node server.js
-   ```
-   The server will start on `http://localhost:3000`
+ollama run llama3
 
-4. **In a new terminal, start the frontend**
-   ```bash
-   npm run dev
-   ```
-   The React app will start on `http://localhost:5173`
+Alternatively, you can use any other model, but you will need to update the model name in the server.py file.
 
-5. **Open your browser**
-   Navigate to `http://localhost:5173` to use the application
+Modelfile: Ensure you have created a Modelfile with the provided system prompt to customize the model's behavior for quiz generation. You will need to build and run this custom model using the Ollama command-line interface.
 
-## 🎮 How to Use
+🚀 Getting Started
+Follow these steps to get the app up and running.
 
-1. **Enter a Topic**: Type any topic you want to quiz on (e.g., "JavaScript", "World History", "Biology")
-2. **Set Question Count**: Choose how many questions you want (1-20)
-3. **Generate Quiz**: Click "Generate Quiz" to create your custom quiz
-4. **Take the Quiz**: Answer all questions by selecting the best option
-5. **View Results**: Submit your answers to see your score and review correct answers
-6. **Generate New Quiz**: Start over with a new topic
+1. Backend Server Setup
+Navigate to the server folder and install the Python dependencies.
 
-## 🛠️ Development
+cd server
+pip install -r requirements.txt
 
-### Project Structure
+Start the server:
 
-```
-ai-quiz-generator/
-├── src/                    # React frontend
-│   ├── App.jsx            # Main application component
-│   ├── App.css            # Application styles
-│   └── main.jsx           # React entry point
-├── server.js              # Express backend server
-├── package.json           # Dependencies and scripts
-├── vite.config.js         # Vite configuration
-└── README.md              # This file
-```
+python server.py
 
-### Available Scripts
+The server will run on http://localhost:5000. Leave this terminal window open.
 
-- `npm run dev` - Start the React development server
-- `npm run build` - Build the React app for production
-- `npm run preview` - Preview the production build
-- `npm run lint` - Run ESLint
+2. Frontend Setup
+Open a new terminal window, navigate to the root of the project, and install the React dependencies.
 
-### API Endpoints
+npm install
 
-- `GET /` - Welcome message and API documentation
-- `GET /health` - Health check endpoint
-- `POST /api/generate-quiz` - Generate a new quiz (topic, questionCount)
-- `GET /api/quiz` - Get all quizzes
-- `POST /api/quiz` - Create a new quiz manually
-- `GET /api/quiz/:id` - Get quiz by ID
-- `PUT /api/quiz/:id` - Update quiz by ID
-- `DELETE /api/quiz/:id` - Delete quiz by ID
+Start the React application:
 
-## 🔧 Configuration
+npm run dev
 
-### Environment Variables
+The app will be available in your browser at http://localhost:5173.
 
-Create a `.env` file in the root directory:
+📝 Usage
+Make sure the Ollama model is running and the Python server is active.
 
-```env
-PORT=3000
-NODE_ENV=development
-```
+Open the web app in your browser.
 
-### Adding Real LLM Integration
+Enter a topic and the desired number of questions.
 
-Currently, the app uses simulated AI responses. To integrate with a real LLM:
+Click "Generate Quiz". The app will stream the response from the local LLM as it's generated.
 
-1. **OpenAI Integration** (example):
-   ```javascript
-   // In server.js, replace generateQuizWithAI function
-   const OpenAI = require('openai');
-   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-   async function generateQuizWithAI(topic, questionCount) {
-     const prompt = `Create a ${questionCount}-question multiple choice quiz about ${topic}. 
-     Return JSON format: {title: "Quiz Title", questions: [{question: "...", options: ["...", "...", "...", "..."], correctAnswer: 0}]}`;
-     
-     const completion = await openai.chat.completions.create({
-       model: "gpt-3.5-turbo",
-       messages: [{ role: "user", content: prompt }],
-     });
-     
-     return JSON.parse(completion.choices[0].message.content);
-   }
-   ```
-
-2. **Add API key to .env**:
-   ```env
-   OPENAI_API_KEY=your_api_key_here
-   ```
-
-## 🎨 Customization
-
-### Styling
-
-The app uses modern CSS with:
-- CSS Grid and Flexbox for layout
-- CSS Custom Properties for theming
-- Smooth transitions and animations
-- Responsive design for all devices
-
-### Adding New Topics
-
-To add support for new topics, update the `sampleQuestions` object in `server.js`:
-
-```javascript
-const sampleQuestions = {
-  'your-topic': [
-    {
-      question: 'Your question here?',
-      options: ['Option A', 'Option B', 'Option C', 'Option D'],
-      correctAnswer: 0
-    }
-    // ... more questions
-  ]
-};
-```
-
-## 🚀 Deployment
-
-### Frontend (Vercel/Netlify)
-
-1. Build the app: `npm run build`
-2. Deploy the `dist` folder to your hosting platform
-
-### Backend (Railway/Heroku)
-
-1. Ensure `package.json` has the correct start script
-2. Set environment variables
-3. Deploy to your preferred platform
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-If you encounter any issues or have questions, please open an issue on GitHub.
-
----
-
-**Happy Quizzing! 🎯**
+Answer the questions and click "Submit Quiz" to see your score and the correct answers.
