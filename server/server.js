@@ -24,7 +24,7 @@ app.post('/api/quiz', async (req, res) => {
   const { topic, questionCount } = req.body;
 
   const output = await ollama.generate({
-    model: 'teacher',
+    model: 'almir',
     prompt: `Topic: ${topic}, ${questionCount} questions`,
     // stream: true
   })

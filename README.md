@@ -15,7 +15,7 @@ Before you can run the application, you need to have the following installed and
 
 Node.js & npm: For the React frontend.
 
-Python 3.x & pip: For the server application.
+npm install in the root of the repo for the React app and npm install in the server folder for the server.
 
 Ollama: A local LLM server. Follow the instructions on the Ollama website to install and run the application.
 
@@ -38,9 +38,9 @@ pip install -r requirements.txt
 
 Start the server:
 
-python server.py
+node server
 
-The server will run on http://localhost:5000. Leave this terminal window open.
+The server will run on http://localhost:3000. Leave this terminal window open.
 
 2. Frontend Setup
 Open a new terminal window, navigate to the root of the project, and install the React dependencies.
